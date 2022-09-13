@@ -6,6 +6,7 @@ package dev.fluttercommunity.plus.androidalarmmanager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.os.Build;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -149,7 +150,11 @@ public class AlarmService extends JobIntentService {
     AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
     if (alarmClock) {
-      AlarmManagerCompat.setAlarmClock(manager, startMillis, pendingIntent, pendingIntent);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !manager.canScheduleExactAlarms()) {
+        Log.e(TAG, "Can`t schedule exact alarm due to revoked SCHEDULE_EXACT_ALARM permission");
+      } else {
+        AlarmManagerCompat.setAlarmClock(manager, startMillis, pendingIntent, pendingIntent);
+      }
       return;
     }
 
@@ -157,10 +162,15 @@ public class AlarmService extends JobIntentService {
       if (repeating) {
         manager.setRepeating(clock, startMillis, intervalMillis, pendingIntent);
       } else {
-        if (allowWhileIdle) {
-          AlarmManagerCompat.setExactAndAllowWhileIdle(manager, clock, startMillis, pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !manager.canScheduleExactAlarms()) {
+          Log.e(TAG, "Can`t schedule exact alarm due to revoked SCHEDULE_EXACT_ALARM permission");
         } else {
-          AlarmManagerCompat.setExact(manager, clock, startMillis, pendingIntent);
+          if (allowWhileIdle) {
+            AlarmManagerCompat.setExactAndAllowWhileIdle(
+                manager, clock, startMillis, pendingIntent);
+          } else {
+            AlarmManagerCompat.setExact(manager, clock, startMillis, pendingIntent);
+          }
         }
       }
     } else {
@@ -221,7 +231,12 @@ public class AlarmService extends JobIntentService {
     // Cancel the alarm with the system alarm service.
     Intent alarm = new Intent(context, AlarmBroadcastReceiver.class);
     PendingIntent existingIntent =
-        PendingIntent.getBroadcast(context, requestCode, alarm, PendingIntent.FLAG_NO_CREATE);
+        PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            alarm,
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
+                | PendingIntent.FLAG_NO_CREATE);
     if (existingIntent == null) {
       Log.i(TAG, "cancel: broadcast receiver not found");
       return;
