@@ -1,16 +1,9 @@
 [![Flutter Community: android_alarm_manager_plus](https://fluttercommunity.dev/_github/header/android_alarm_manager_plus)](https://github.com/fluttercommunity/community)
 
-<center><a href="https://flutter.dev/docs/development/packages-and-plugins/favorites" target="_blank" rel="noreferrer noopener"><img src="../../website/static/img/flutter-favorite-badge.png" width="100" alt="build"></a></center>
 # android_alarm_manager_plus
 
 A Flutter plugin for accessing the Android AlarmManager service, and running
 Dart code in the background when alarms fire.
-
-## Platform Support
-
-| Android |
-| :-----: |
-|   ✔️    |
 
 ## Getting Started
 
@@ -40,7 +33,6 @@ Next, within the `<application></application>` tags, add:
     </intent-filter>
 </receiver>
 
-Check out our documentation website to learn more. [Plus plugins documentation](https://plus.fluttercommunity.dev/docs/overview)
 ```
 
 Then in Dart code add:
@@ -48,7 +40,7 @@ Then in Dart code add:
 ```dart
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 
-static void printHello() {
+void printHello() {
   final DateTime now = DateTime.now();
   final int isolateId = Isolate.current.hashCode;
   print("[$now] Hello, world! isolate=${isolateId} function='$printHello'");
@@ -66,6 +58,7 @@ main() async {
 will not run in the same isolate as the main application. Unlike threads, isolates do not share
 memory and communication between isolates must be done via message passing (see more documentation on
 isolates [here](https://api.dart.dev/stable/2.0.0/dart-isolate/dart-isolate-library.html)).
+
 
 ## Using other plugins in alarm callbacks
 
@@ -146,10 +139,17 @@ To run the test, run from the `example/android` folder:
 
 ### Running End-to-end Flutter Driver tests
 
+Work In Progress.
+
 To run the Flutter Driver tests, cd into `example` and run:
 
 ```
 flutter driver test_driver/android_alarm_manager_e2e.dart
 ```
 
-**Important:** As of January 2021, the Flutter team is no longer accepting non-critical PRs for the original set of plugins in `flutter/plugins`, and instead they should be submitted in this project. [You can read more about this announcement here.](https://github.com/flutter/plugins/blob/master/CONTRIBUTING.md#important-note) as well as [in the Flutter 2 announcement blog post.](https://medium.com/flutter/whats-new-in-flutter-2-0-fe8e95ecc65)
+## Need more help?
+
+For help getting started with Flutter, view our online
+[documentation](https://flutter.io/).
+
+For help on editing plugin code, view the [documentation](https://flutter.io/platform-plugins/#edit-code).

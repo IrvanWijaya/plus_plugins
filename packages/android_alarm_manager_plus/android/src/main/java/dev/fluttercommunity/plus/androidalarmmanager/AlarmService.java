@@ -6,7 +6,6 @@ package dev.fluttercommunity.plus.androidalarmmanager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.os.Build;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,16 +14,16 @@ import android.util.Log;
 import androidx.core.app.AlarmManagerCompat;
 import androidx.core.app.JobIntentService;
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class AlarmService extends JobIntentService {
   private static final String TAG = "AlarmService";
   private static final String PERSISTENT_ALARMS_SET_KEY = "persistent_alarm_ids";
-  protected static final String SHARED_PREFERENCES_KEY =
-      "dev.fluttercommunity.plus.android_alarm_manager_plugin";
+  protected static final String SHARED_PREFERENCES_KEY = "dev.fluttercommunity.plus.android_alarm_manager_plugin";
   private static final int JOB_ID = 1984; // Random job ID.
   private static final Object persistentAlarmsLock = new Object();
 
@@ -139,7 +138,7 @@ public class AlarmService extends JobIntentService {
             alarm,
             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
                 | PendingIntent.FLAG_UPDATE_CURRENT);
-
+                
     // Use the appropriate clock.
     int clock = AlarmManager.RTC;
     if (wakeup) {
@@ -150,11 +149,7 @@ public class AlarmService extends JobIntentService {
     AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
     if (alarmClock) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !manager.canScheduleExactAlarms()) {
-        Log.e(TAG, "Can`t schedule exact alarm due to revoked SCHEDULE_EXACT_ALARM permission");
-      } else {
-        AlarmManagerCompat.setAlarmClock(manager, startMillis, pendingIntent, pendingIntent);
-      }
+      AlarmManagerCompat.setAlarmClock(manager, startMillis, pendingIntent, pendingIntent);
       return;
     }
 
@@ -162,15 +157,10 @@ public class AlarmService extends JobIntentService {
       if (repeating) {
         manager.setRepeating(clock, startMillis, intervalMillis, pendingIntent);
       } else {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !manager.canScheduleExactAlarms()) {
-          Log.e(TAG, "Can`t schedule exact alarm due to revoked SCHEDULE_EXACT_ALARM permission");
+        if (allowWhileIdle) {
+          AlarmManagerCompat.setExactAndAllowWhileIdle(manager, clock, startMillis, pendingIntent);
         } else {
-          if (allowWhileIdle) {
-            AlarmManagerCompat.setExactAndAllowWhileIdle(
-                manager, clock, startMillis, pendingIntent);
-          } else {
-            AlarmManagerCompat.setExact(manager, clock, startMillis, pendingIntent);
-          }
+          AlarmManagerCompat.setExact(manager, clock, startMillis, pendingIntent);
         }
       }
     } else {
@@ -231,12 +221,7 @@ public class AlarmService extends JobIntentService {
     // Cancel the alarm with the system alarm service.
     Intent alarm = new Intent(context, AlarmBroadcastReceiver.class);
     PendingIntent existingIntent =
-        PendingIntent.getBroadcast(
-            context,
-            requestCode,
-            alarm,
-            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
-                | PendingIntent.FLAG_NO_CREATE);
+        PendingIntent.getBroadcast(context, requestCode, alarm, PendingIntent.FLAG_NO_CREATE);
     if (existingIntent == null) {
       Log.i(TAG, "cancel: broadcast receiver not found");
       return;

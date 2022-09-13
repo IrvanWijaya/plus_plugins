@@ -94,7 +94,7 @@ class _AlarmHomePageState extends State<_AlarmHomePage> {
 
     // Get the previous cached count and increment it.
     final prefs = await SharedPreferences.getInstance();
-    final currentCount = prefs.getInt(countKey);
+    var currentCount = prefs.getInt(countKey);
     await prefs.setInt(countKey, currentCount + 1);
 
     // This will be null if we're running in the background.
@@ -131,7 +131,10 @@ class _AlarmHomePageState extends State<_AlarmHomePage> {
                 ),
               ],
             ),
-            ElevatedButton(
+            RaisedButton(
+              child: Text(
+                'Schedule OneShot Alarm',
+              ),
               key: ValueKey('RegisterOneShotAlarm'),
               onPressed: () async {
                 await AndroidAlarmManager.oneShot(
@@ -143,9 +146,6 @@ class _AlarmHomePageState extends State<_AlarmHomePage> {
                   wakeup: true,
                 );
               },
-              child: Text(
-                'Schedule OneShot Alarm',
-              ),
             ),
           ],
         ),

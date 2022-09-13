@@ -55,15 +55,14 @@ void _alarmManagerCallbackDispatcher() {
 // A lambda that returns the current instant in the form of a [DateTime].
 typedef _Now = DateTime Function();
 // A lambda that gets the handle for the given [callback].
-typedef _GetCallbackHandle = CallbackHandle? Function(Function callback);
+typedef _GetCallbackHandle = CallbackHandle Function(Function callback);
 
 /// A Flutter plugin for registering Dart callbacks with the Android
 /// AlarmManager service.
 ///
 /// See the example/ directory in this package for sample usage.
 class AndroidAlarmManager {
-  static const String _channelName =
-      'dev.fluttercommunity.plus/android_alarm_manager';
+  static const String _channelName = 'dev.fluttercommunity.plus/android_alarm_manager';
   static final MethodChannel _channel =
       const MethodChannel(_channelName, JSONMethodCodec());
 
@@ -78,10 +77,8 @@ class AndroidAlarmManager {
   /// This is exposed for the unit tests. It should not be accessed by users of
   /// the plugin.
   @visibleForTesting
-  static void setTestOverrides({
-    _Now? now,
-    _GetCallbackHandle? getCallbackHandle,
-  }) {
+  static void setTestOverides(
+      {_Now now, _GetCallbackHandle getCallbackHandle}) {
     _now = (now ?? _now);
     _getCallbackHandle = (getCallbackHandle ?? _getCallbackHandle);
   }
@@ -264,7 +261,7 @@ class AndroidAlarmManager {
     Duration duration,
     int id,
     Function callback, {
-    DateTime? startAt,
+    DateTime startAt,
     bool exact = false,
     bool wakeup = false,
     bool rescheduleOnReboot = false,

@@ -13,7 +13,7 @@ void main() {
   void validCallback(int id) => null;
 
   const testChannel = MethodChannel(
-      'dev.fluttercommunity.plus/android_alarm_manager', JSONMethodCodec());
+      'plugins.flutter.io/android_alarm_manager', JSONMethodCodec());
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() {
@@ -52,7 +52,7 @@ void main() {
     test('sends arguments to the platform', () async {
       final alarm = DateTime(1993);
       const rawHandle = 4;
-      AndroidAlarmManager.setTestOverrides(
+      AndroidAlarmManager.setTestOverides(
           getCallbackHandle: (Function _) =>
               CallbackHandle.fromRawHandle(rawHandle));
 
@@ -91,7 +91,7 @@ void main() {
   test('${AndroidAlarmManager.oneShot} calls through to oneShotAt', () async {
     final now = DateTime(1993);
     const rawHandle = 4;
-    AndroidAlarmManager.setTestOverrides(
+    AndroidAlarmManager.setTestOverides(
         now: () => now,
         getCallbackHandle: (Function _) =>
             CallbackHandle.fromRawHandle(rawHandle));
@@ -149,7 +149,7 @@ void main() {
     test('sends arguments through to the platform', () async {
       final now = DateTime(1993);
       const rawHandle = 4;
-      AndroidAlarmManager.setTestOverrides(
+      AndroidAlarmManager.setTestOverides(
           now: () => now,
           getCallbackHandle: (Function _) =>
               CallbackHandle.fromRawHandle(rawHandle));

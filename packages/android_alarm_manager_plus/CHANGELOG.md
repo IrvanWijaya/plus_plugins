@@ -1,15 +1,3 @@
-## 1.0.2
-
-- Android: migrate to mavenCentral
-
-## 1.0.1
-
-- Improve documentation
-
-## 1.0.0
-
-- Null safety support.
-
 ## 0.6.0
 
 - Renamed Method Channel and changed Java package to avoid collision with android_alarm_manager
